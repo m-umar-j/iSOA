@@ -12,7 +12,7 @@ from segment_anything import sam_model_registry, SamAutomaticMaskGenerator, SamP
 
 #output_path = '/home/azureuser/iSOA/data/segmented_objects/output_image4.png'
 
-sam_checkpoint = '/home/azureuser/iSOA/SAM_weights/sam_vit_h_4b8939.pth'
+sam_checkpoint = '/home/azureuser/iSOA/SAM_weights/sam_vit_h_4b8939.pth' # download weights and add the path accordingly
 model_type = "vit_h"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
