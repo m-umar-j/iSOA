@@ -1,46 +1,21 @@
-import numpy as np
-import cv2
-from PIL import Image
-from ultralytics import YOLO
+from caption import generate_captions
+from object_detection import detect_objects
+from ocr import detect_text
+from segmentation_model import generate_masks
 
-# Perform object detection
-model = YOLO("/home/azureuser/iSOA/runs/detect/train/weights/best.pt")
 
-results = model("/home/azureuser/iSOA/data/input_images/yolotest.png")
 
-for i, result in enumerate(results):
-    # Save and show the annotated image
-    result.save('output3.jpg')
-    result.show()
+image_path = '/home/azureuser/iSOA/data/input_images/yolotest.png'
+mask_dir = "/home/azureuser/iSOA/data/segmented_objects"
+crop_dir = "/home/azureuser/iSOA/data/cropped_objects"
+metadata = "/home/azureuser/iSOA/data/output/metadata.db"  # change the path accordingly
 
-    # Extract bounding boxes, class IDs, and masks
-    boxes = result.boxes.xyxy.cpu().numpy()
-    class_ids = result.boxes.cls.cpu().numpy()
-    masks = result.masks  # Assuming masks are available
-    names = result.names
 
-    # Print the names dictionary for reference
-    print("Class names dictionary:", names)
+generate_masks(image_path, mask_dir, crop_dir, metadata)
 
-    # Load the original image for overlay
-    orig_image = cv2.imread("/home/azureuser/iSOA/data/input_images/yolotest.png")
+detect_objects(metadata)
 
-    # Print bounding boxes, labels, and masks
-    print(f"Bounding boxes shape: {boxes.shape}")
-    for box, class_id in zip(boxes, class_ids):
-        x_min, y_min, x_max, y_max = box
-        label = names[int(class_id)]
-        print(f"Bounding Box: [{x_min}, {y_min}, {x_max}, {y_max}] - Label: {label}")
-        
-        # Display masks if available
-        if masks is not None:
-            for mask in masks:
-                # Assuming mask is a binary mask
-                mask_img = mask.cpu().numpy().astype(np.uint8) * 255  # Convert mask to uint8 image
-                mask_img = cv2.resize(mask_img, (orig_image.shape[1], orig_image.shape[0]))  # Resize to original image size
-                masked_image = cv2.bitwise_and(orig_image, orig_image, mask=mask_img)  # Apply mask
-                masked_image_pil = Image.fromarray(masked_image)
+# I have used BLIP to generate captions
+generate_captions(metadata)
 
-                # Save or display the masked image
-                masked_image_pil.save(f"masked_object_{i}.png")
-                masked_image_pil.show()
+detect_text(metadata)

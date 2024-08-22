@@ -36,7 +36,7 @@ def generate_masks(image_path, mask_dir, crop_dir, metadata):
     image = cv2.imread(image_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     masks = mask_generator.generate(image)
-
+    
 
     connection = sqlite3.connect(metadata)
     cursor = connection.cursor()
@@ -46,7 +46,7 @@ def generate_masks(image_path, mask_dir, crop_dir, metadata):
                 master_id TEXT NOT NULL,
                 object_id TEXT NOT NULL,
                 mask_location TEXT NOT NULL,
-                cropped_image TEXT NOT NULL,
+                cropped_object TEXT NOT NULL,
                 area INTEGER NOT NULL,
                 x_min INTEGER NOT NULL,
                 x_max INTEGER NOT NULL,
@@ -64,7 +64,7 @@ def generate_masks(image_path, mask_dir, crop_dir, metadata):
 
 
     masks.sort(key = lambda x:x['area'], reverse = True)
-    
+    combined_mask = np.zeros(image.shape[:2], dtype=np.uint8)
     masks = masks[:25] 
 
 
@@ -83,10 +83,13 @@ def generate_masks(image_path, mask_dir, crop_dir, metadata):
 
         mask_filename = os.path.join(mask_dir, f"mask{i+1}.png")
         cv2.imwrite(mask_filename, mask_img)
-        
+        combined_mask = np.maximum(combined_mask, mask_img)
         object_id = f"object{i+1}"
-        cursor.execute('''INSERT INTO objects (master_id, object_id, mask_location, cropped_image, area, x_min, x_max, y_min, y_max) VALUES (?,?,?,?,?,?,?,?,?)'''
+        cursor.execute('''INSERT INTO objects (master_id, object_id, mask_location, cropped_object, area, x_min, x_max, y_min, y_max) VALUES (?,?,?,?,?,?,?,?,?)'''
                     ,(master_id, object_id, mask_filename, crop_filename, area, x_min, x_max, y_min, y_max))
-
+    masked_image_output = '/home/azureuser/iSOA/data/output/masked_image.png'
+    combined_mask_rgb = cv2.cvtColor(combined_mask, cv2.COLOR_GRAY2RGB)
+    masked_image = cv2.addWeighted(image, 1.0, combined_mask_rgb, 0.5, 0)
+    cv2.imwrite(masked_image_output, masked_image)
     connection.commit()
     connection.close()

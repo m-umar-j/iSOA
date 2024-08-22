@@ -11,10 +11,10 @@ def detect_objects(metadata):
     connection = sqlite3.connect(metadata)
     cursor = connection.cursor()
 
-    cursor.execute('''SELECT cropped_image FROM objects''')
+    cursor.execute('''SELECT cropped_object FROM objects''')
     rows = cursor.fetchall()
 
-    #cursor.execute('''ALTER TABLE objects ADD COLUMN label TEXT''')
+    cursor.execute('''ALTER TABLE objects ADD COLUMN label TEXT''')
 
     for row in rows:
         # Load image
@@ -27,16 +27,14 @@ def detect_objects(metadata):
 
 
         for result in results:
-            # Display bounding boxes, class names, and confidence scores
-            result.save('output.jpg')
-            boxes = result.boxes.xyxy.cpu().numpy()  # Convert to numpy array
+            
             class_ids = result.boxes.cls.cpu().numpy()
             names = result.names
 
             for  class_id in  class_ids:
                 
                 label = names[int(class_id)]  # Get the class name
-                cursor.execute('''UPDATE objects SET label = ? WHERE cropped_image = ?'''
+                cursor.execute('''UPDATE objects SET label = ? WHERE cropped_object = ?'''
                             ,(label, image_path))
                 print(label)
     connection.commit()

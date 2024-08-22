@@ -18,5 +18,7 @@ def detect_text(metadata):
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         result = reader.readtext(image, detail = 0)
-        cursor.execute('''UPDATE objects SET text_from_image = ? WHERE cropped_image = ? ''',
-                       (result, image_path))
+        if len(result)==0:
+            result = 'null'
+        cursor.execute('''UPDATE objects SET text_from_image = ? WHERE cropped_object = ? ''',
+                       (result[0], image_path))

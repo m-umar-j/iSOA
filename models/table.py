@@ -5,7 +5,7 @@ connection = sqlite3.connect('/home/azureuser/iSOA/data/output/metadata.db')
 cursor = connection.cursor()
 
 # Executing a query to select all records from the objects table
-cursor.execute('''SELECT label FROM objects''')
+cursor.execute('''SELECT * FROM objects''')
 
 # Fetch all results from the query
 rows = cursor.fetchall()
