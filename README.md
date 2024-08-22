@@ -1,6 +1,7 @@
 # iSOA
 
 ## Image Segmentation and Object Analysis Pipeline
+![image](https://github.com/user-attachments/assets/77ffa1ab-f2d4-4171-af26-0948f1f20532)
 
 ## Overview
 This project provides an end-to-end pipeline for image segmentation, object detection, text recognition, and caption generation using various models and tools. The pipeline includes modules for segmentation, detection, OCR, and captioning, and integrates with a Gradio interface for user interaction.
