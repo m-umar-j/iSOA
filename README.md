@@ -1,6 +1,6 @@
-# iSOA
 
-## Image Segmentation and Object Analysis Pipeline
+
+# Image Segmentation and Object Analysis Pipeline
 ![image](https://github.com/user-attachments/assets/77ffa1ab-f2d4-4171-af26-0948f1f20532)
 
 ## Overview
