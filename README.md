@@ -22,7 +22,7 @@ This project provides an end-to-end pipeline for image segmentation, object dete
 - Updates the SQLite database with generated captions.
 
 ### `ocr.py`
-- Placeholder for OCR functionality (implementation not provided).
+- Placeholder for OCR functionality.
 
 ### `main.py`
 - Integrates all functionalities: image upload, mask generation, object detection, captioning, and text detection.
