@@ -9,7 +9,7 @@ This project provides an end-to-end pipeline for image segmentation, object dete
 ## Files
 
 ### `segmentation.py`
-- Loads the SAM model and generates masks for input images.
+- Loads the SAM model and generates masks for input image.
 - Saves masks and cropped images to specified directories.
 - Stores metadata in an SQLite database.
 
